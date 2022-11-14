@@ -63,7 +63,7 @@ describe('GET /api/articles', () => {
       });
     });
   });
-  test.only('Status 404: responds with an error message (Route not found)', () => {
+  test('Status 404: responds with an error message (Route not found)', () => {
     return request(app)
     .get('/api/arts')
     .expect(404)
