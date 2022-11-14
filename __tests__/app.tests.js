@@ -42,19 +42,15 @@ describe(`GET /api/topics`, () => {
 });
 
 describe('GET /api/articles', () => {
-  test.only('Status 200: responds with an array of artcle objects, each containing the properties author, title, article_id, topic, created_at, votes and comment_count ordered by date descending', () => {
+  test('Status 200: responds with an array of artcle objects, each containing the properties author, title, article_id, topic, created_at, votes and comment_count ordered by date descending', () => {
     return request(app)
     .get('/api/articles')
     .expect(200)
     .then(result => {
-      
       const articles = result.body.articles;
-     
       expect(articles).toBeInstanceOf(Array);
       expect(articles).toHaveLength(5);
       articles.forEach((article) => {
-       
-       
           expect(article).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
@@ -64,8 +60,15 @@ describe('GET /api/articles', () => {
             votes: expect.any(Number),
             comment_count: expect.any(Number)
           })
-        
       });
     });
   });
+  test.only('Status 404: responds with an error message (Route not found)', () => {
+    return request(app)
+    .get('/api/arts')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Route not found');
+    });
+  })
 })
