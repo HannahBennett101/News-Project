@@ -16,3 +16,11 @@ exports.selectArticles = () => {
     .then((result) => result.rows)
     .catch(err => Promise.reject(err));
 };
+
+exports.selectArticleByID = (article_id) =>{
+    
+    return db.query(
+            `SELECT * FROM articles WHERE article_id = $1`, [article_id]
+        ).then(({rows}) => rows[0] === undefined ? Promise.reject({status:404, msg:"Article not found"}) : rows[0])
+        .catch(err => Promise.reject(err))
+};
