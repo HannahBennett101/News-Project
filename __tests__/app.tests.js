@@ -115,7 +115,7 @@ describe('GET /api/articles/:article_id/comments', () => {
     .expect(200)
     .then((response) => {
       const articleOneComments = response.body.comments;
-      console.log(articleOneComments)
+  
       expect(articleOneComments).toHaveLength(11)
       articleOneComments.forEach((comment) => {
         expect(comment).toMatchObject({
