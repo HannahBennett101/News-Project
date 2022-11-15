@@ -42,7 +42,7 @@ describe(`GET /api/topics`, () => {
 });
 
 describe('GET /api/articles', () => {
-  test('Status 200: responds with an array of artcle objects, each containing the properties author, title, article_id, topic, created_at, votes and comment_count ordered by date descending', () => {
+  test('Status 200: responds with an array of article objects, each containing the properties author, title, article_id, topic, created_at, votes and comment_count ordered by date descending', () => {
     return request(app)
     .get('/api/articles')
     .expect(200)
@@ -70,5 +70,40 @@ describe('GET /api/articles', () => {
     .then(({body}) => {
       expect(body.msg).toBe('Route not found');
     });
-  })
-})
+  });
+});
+
+describe('GET /api/articles/:article_id', () => {
+  test('Status 200: responds with a specific article, given the article id', ()=> {
+    return request(app)
+    .get('/api/articles/1')
+    .expect(200)
+    .then((response) => {
+      expect(response.body.article).toMatchObject({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: "2020-07-09T20:11:00.000Z",
+        votes: 100
+      })
+    });
+  });
+  test('Status 404 responds with a status (Article not found)', () => {
+    return request(app)
+    .get('/api/articles/1000')
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe('Article not found')
+    });
+  });
+  test.only('Status 400 responds with a status (Invalid Article ID)', () => {
+    return request(app)
+    .get('/api/articles/one')
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe('Invalid article ID')
+    });
+  });
+});
