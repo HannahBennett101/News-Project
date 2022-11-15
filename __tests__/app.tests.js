@@ -98,12 +98,12 @@ describe('GET /api/articles/:article_id', () => {
       expect(response.body.msg).toBe('Article not found')
     });
   });
-  test.only('Status 400 responds with a status (Invalid Article ID)', () => {
+  test('Status 400 responds with a status (Invalid Article ID)', () => {
     return request(app)
     .get('/api/articles/one')
     .expect(400)
     .then((response) => {
-      expect(response.body.msg).toBe('Invalid article ID')
+      expect(response.body.msg).toBe('Invalid data type')
     });
   });
 });

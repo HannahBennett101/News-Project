@@ -19,14 +19,8 @@ exports.selectArticles = () => {
 
 exports.selectArticleByID = (article_id) =>{
     
-    if (typeof article_id !== "number"){
-        return Promise.reject({
-            status: 400,
-            msg: "Invalid article ID"
-        });
-    } else {
     return db.query(
             `SELECT * FROM articles WHERE article_id = $1`, [article_id]
         ).then(({rows}) => rows[0] === undefined ? Promise.reject({status:404, msg:"Article not found"}) : rows[0])
-        .catch(err => Promise.reject(err))}
+        .catch(err => Promise.reject(err))
 };
