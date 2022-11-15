@@ -107,3 +107,55 @@ describe('GET /api/articles/:article_id', () => {
     });
   });
 });
+
+describe('GET /api/articles/:article_id/comments', () => {
+  test('Status 200: responds with a specific article, given the article id and the corresponding comments sorted newest to oldest', ()=> {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then((response) => {
+      const articleOneComments = response.body.comments;
+  
+      expect(articleOneComments).toHaveLength(11)
+      articleOneComments.forEach((comment) => {
+        expect(comment).toMatchObject({
+         
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String)
+
+      })
+    });
+    expect(articleOneComments).toBeSortedBy("created_at", {descending: true, coerce: true, })
+  });
+});
+test('Status 200: responds with a specific article, given the article id but no comments', ()=> {
+  return request(app)
+  .get('/api/articles/4/comments')
+  .expect(200)
+  .then((response) => {
+    const articleFourComments = response.body.comments;
+    expect(articleFourComments).toHaveLength(0)
+
+});
+})
+  test('Status 404 responds with a status (Article not found)', () => {
+    return request(app)
+    .get('/api/articles/1000/comments')
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe('Article not found')
+  });
+});
+test('Status 400 responds with a status (Invalid Article ID)', () => {
+  return request(app)
+  .get('/api/articles/one/comments')
+  .expect(400)
+  .then((response) => {
+    expect(response.body.msg).toBe('Invalid data type')
+  });
+});
+
+})
