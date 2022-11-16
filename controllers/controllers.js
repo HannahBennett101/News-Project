@@ -1,4 +1,4 @@
-const { selectTopics, selectArticles, selectArticleByID, selectCommentsByArticleID } = require('../models/models');
+const { selectTopics, selectArticles, selectArticleByID, selectCommentsByArticleID, insertComment } = require('../models/models');
 
 
 exports.getTopics = (req,res,next) => {
@@ -26,3 +26,16 @@ exports.getCommentsByArticleID = (req, res, next) => {
     .then(comments => res.status(200).send({ comments }))
     .catch(err => next(err));
 };
+
+
+exports.postComment = (req, res, next) => {
+    
+    const { article_id } = req.params;
+    
+    insertComment(article_id, req.body)
+    .then(result => {
+        
+        res.status(201).send({ result })})
+    .catch(err => next(err));
+};
+

@@ -103,7 +103,7 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/one')
     .expect(400)
     .then((response) => {
-      expect(response.body.msg).toBe('Invalid data type')
+      expect(response.body.msg).toBe('Bad Request')
     });
   });
 });
@@ -154,8 +154,93 @@ test('Status 400 responds with a status (Invalid Article ID)', () => {
   .get('/api/articles/one/comments')
   .expect(400)
   .then((response) => {
-    expect(response.body.msg).toBe('Invalid data type')
+    expect(response.body.msg).toBe('Bad Request')
   });
 });
 
-})
+});
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('Status 201: responds with a new comment added to the comment database', () => {
+    const commentToPost = {
+      author: 'icellusedkars',
+      body: 'comment'
+    };
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(commentToPost)
+    .expect(201)
+    .then(({body}) => { 
+      const respondingComment = body.result
+      expect(respondingComment).toMatchObject({
+          comment_id: 19,
+          body: 'comment',
+          author: 'icellusedkars',
+          article_id: 2,
+          votes: 0,
+          created_at: expect.any(String)
+        })
+      });
+    });
+    test('Status 400: responds with error message (bad request) when passed an object without two keys to post', () => {
+      const noBody = {
+        author: 'icellusedkars'
+      }
+      return request(app)
+      .post('/api/articles/2/comments')
+      .send(noBody)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("New comment is of invalid format")
+      });
+    });
+    test('Status 400: responds with error message (bad request) when passed an object with empty body', () => {
+      const emptyBody = {author: 'icellusedkars',
+      body: ""
+    }
+    return request(app)
+    .post('/api/articles/2/comments')
+      .send(emptyBody)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("New comment is of invalid format")
+      });
+    });
+    test('Status 404: author name not found', () => {
+      const commentToPost= { 
+        author: 'me',
+        body: 'I am commenting'
+      };
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send(commentToPost)
+      .expect(404)
+      .then((response) =>{
+      
+      expect(response.body.msg).toBe("Author does not exist")})
+    });
+    test('Status 404: article_id not found', () => {
+      const commentToPost= { 
+        author: 'icellusedkars',
+        body: 'I am commenting'
+      };
+      return request(app)
+      .post('/api/articles/1000/comments')
+      .send(commentToPost)
+      .expect(400)
+      .then((response) =>{
+      expect(response.body.msg).toBe("Bad Request")})
+    });
+    test('Status 400: invalid article_id', () => {
+      const commentToPost= { 
+        author: 'icellusedkars',
+        body: 'I am commenting'
+      };
+      return request(app)
+      .post('/api/articles/one/comments')
+      .send(commentToPost)
+      .expect(400)
+      .then((response) =>{
+      expect(response.body.msg).toBe("Bad Request")})
+    })
+  })
