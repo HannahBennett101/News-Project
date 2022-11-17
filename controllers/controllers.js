@@ -1,5 +1,5 @@
 const { selectTopics, selectArticles, selectArticleByID, selectCommentsByArticleID, insertComment, updateVote, selectUsers } = require('../models/models');
-
+const endpoints = require(`../endpoints.json`)
 
 exports.getTopics = (req,res,next) => {
     selectTopics()
@@ -8,10 +8,19 @@ exports.getTopics = (req,res,next) => {
 };
 
 exports.getArticles = (req,res,next) => {
-    selectArticles()
+    selectArticles(req.query.topic, req.query.sort_by, req.query.order)
     .then((articles) => res.status(200).send({articles}))
     .catch(err => next(err));
 };
+
+exports.checkQueries = (req,res,next) => {
+    const columns = ["created_at", "votes", "comment_count"];
+    if (req.query.sort_by && !columns.includes(req.query.sort_by)) {
+        res.status(400).send({msg:"unable to sort by this parameter"})
+    } else if (req.query.order && req.query.order.toUpperCase() !== 'ASC' && req.query.order.toUpperCase() !== 'DESC') {
+        res.status(400).send({msg:'cannot order by this parameter'})
+    } else {next()}
+}
 
 exports.getArticlesByID = (req, res, next) => {
     const { article_id } = req.params;
