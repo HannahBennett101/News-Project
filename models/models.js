@@ -42,12 +42,19 @@ exports.selectCommentsByArticleID = (article_id) => {
 }
 
 exports.insertComment = (article_id, comment) => {
-    let lengthOfComment = Object.keys(comment).length;
-    if (lengthOfComment < 2 || comment.body.length === 0){
-        return Promise.reject({status: 400, msg: "New comment is of invalid format"})
-    }
-    const user = comment.author;
-    return checkUserExists(user).then(() => {
-        return db.query(`INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING* ;`, [article_id, comment.author, comment.body])
-    }).then(({rows}) => rows[0] === undefined ? Promise.reject({status: 404, msg: "Article not found"}) : rows[0]).catch(err => Promise.reject(err));
-};
+    let articlesCount = 0;
+    return db.query(`SELECT COUNT(*) FROM articles;`).then((articleCount) => {
+        articlesCount = Number(articleCount.rows[0].count)
+    }).then(() => {
+        if (article_id > articlesCount){
+            return Promise.reject({status:404, msg: "Article not found"})
+        }
+        let lengthOfComment = Object.keys(comment).length;
+        if (lengthOfComment < 2 || comment.body.length === 0){
+           return Promise.reject({status: 400, msg: "New comment is of invalid format"})}
+        const user = comment.author;
+            return checkUserExists(user).then(() => {
+            return db.query(`INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING* ;`, [article_id, comment.author, comment.body])
+        }).then(({rows}) => rows[0] === undefined ? Promise.reject({status: 404, msg: "Article not found"}) : rows[0]).catch(err => Promise.reject(err));
+    })
+}

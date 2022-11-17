@@ -194,18 +194,6 @@ describe('POST /api/articles/:article_id/comments', () => {
         expect(response.body.msg).toBe("New comment is of invalid format")
       });
     });
-    test('Status 400: responds with error message (bad request) when passed an object with empty body', () => {
-      const emptyBody = {author: 'icellusedkars',
-      body: ""
-    }
-    return request(app)
-    .post('/api/articles/2/comments')
-      .send(emptyBody)
-      .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toBe("New comment is of invalid format")
-      });
-    });
     test('Status 404: author name not found', () => {
       const commentToPost= { 
         author: 'me',
@@ -227,9 +215,9 @@ describe('POST /api/articles/:article_id/comments', () => {
       return request(app)
       .post('/api/articles/1000/comments')
       .send(commentToPost)
-      .expect(400)
+      .expect(404)
       .then((response) =>{
-      expect(response.body.msg).toBe("Bad Request")})
+      expect(response.body.msg).toBe("Article not found")})
     });
     test('Status 400: invalid article_id', () => {
       const commentToPost= { 
