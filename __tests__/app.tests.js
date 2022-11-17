@@ -386,7 +386,7 @@ describe('POST /api/articles/:article_id/comments', () => {
         expect(articles).toBeSortedBy("votes", {descending: true, coerce: true})
       })
     })
-    test('Status 404: responds with an error message when asked to sort by an invalid proeprty', () => {
+    test('Status 400: responds with an error message when asked to sort by an invalid proeprty', () => {
       return request(app)
       .get('/api/articles?sort_by=numbers')
       .expect(400)
