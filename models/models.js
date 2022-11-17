@@ -58,3 +58,16 @@ exports.insertComment = (article_id, comment) => {
         }).then(({rows}) => rows[0] === undefined ? Promise.reject({status: 404, msg: "Article not found"}) : rows[0]).catch(err => Promise.reject(err));
     })
 }
+
+exports.updateVote = (article_id, article) => {
+    const increment = Number(article.inc_votes);
+  
+    if (isNaN(increment)){
+        return Promise.reject({status: 400, msg: "Bad Request"})
+    }
+    
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
+    [article.inc_votes, article_id])
+    .then(({rows}) => rows[0] === undefined? Promise.reject({ status:404, msg: "Article not found"}) : rows[0])
+};
+
