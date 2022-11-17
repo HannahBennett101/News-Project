@@ -71,3 +71,8 @@ exports.updateVote = (article_id, article) => {
     .then(({rows}) => rows[0] === undefined? Promise.reject({ status:404, msg: "Article not found"}) : rows[0])
 };
 
+exports.selectUsers = () => {
+    return db.query(`SELECT username, name, avatar_url FROM users; `)
+    .then((result) => result.rows)
+    .catch(err => Promise.reject(err))
+};

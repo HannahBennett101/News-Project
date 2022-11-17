@@ -304,3 +304,33 @@ describe('POST /api/articles/:article_id/comments', () => {
       .then(({body}) => {expect(body.msg).toBe('Bad Request')})
     });
   });
+  
+  describe('GET /api/users', () => {
+    test('Status 200: respndse with an array of user objects', () => {
+      return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(result => {
+        const users = result.body.users;
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String)
+            })
+          )
+        })
+      })
+    });
+    test('Status 404: responds with an error message (Route not found)', () => {
+      return request(app)
+      .get('/api/username')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('Route not found');
+      });
+    });
+  });
