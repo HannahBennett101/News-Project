@@ -8,15 +8,21 @@ exports.selectTopics = () => {
     .catch(err => Promise.reject(err));
 };
 
-exports.selectArticles = () => {
-    return db
-    .query(`SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id) ::INT AS comment_count FROM articles
-    JOIN comments ON comments.article_id = articles.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`)
-    .then((result) => result.rows)
-    .catch(err => Promise.reject(err));
-};
+exports.selectArticles = (topic, sort_by = "created_at", order = "DESC") => {
+    let query = `SELECT author, title, article_id, topic, created_at, votes, (SELECT COUNT(comment_id) ::INT FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles`
+
+    let queryOptions = [];
+
+    if(topic){
+        query += " WHERE articles.topic = $1";
+        queryOptions.push(topic)
+    }
+
+    query += ` ORDER BY ${sort_by} ${order};`
+
+    return db.query(query, queryOptions)
+    .then(({ rows }) => rows[0] === undefined ? Promise.reject({ status:404, msg: "No articles associated with this topic"}) : rows)
+}
 
 exports.selectArticleByID = (article_id) =>{
     return db.query(
