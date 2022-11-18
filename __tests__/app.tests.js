@@ -448,7 +448,7 @@ describe('POST /api/articles/:article_id/comments', () => {
   })
 
   describe('comment count addition', () => {
-    test('Status 200: responds with a comment count for article 2 (cooment count exists)', () => {
+    test('Status 200: responds with a comment count for article 2 (comment count exists)', () => {
       return request(app)
       .get('/api/articles/1?comment_count=true')
       .expect(200)
