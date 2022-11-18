@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const {getTopics, getArticles, getArticlesByID, getCommentsByArticleID, postComment, validatePatch, patchVotes,  getUsers, checkQueries} = require('../controllers/controllers');
+const {getTopics, getArticles, getArticlesByID, getCommentsByArticleID, postComment, validatePatch, patchVotes,  getUsers, checkQueries, deleteComment} = require('../controllers/controllers');
 
 app.use(express.json())
 
@@ -17,6 +17,9 @@ app.post("/api/articles/:article_id/comments",  postComment);
 app.patch('/api/articles/:article_id', validatePatch, patchVotes)
 
 app.get('/api/users', getUsers)
+
+app.delete('/api/comments/:comment_id', deleteComment)
+
 //Error handling:
 
 //Handle custom errors

@@ -85,3 +85,15 @@ exports.selectUsers = () => {
     .then((result) => result.rows)
     .catch(err => Promise.reject(err))
 };
+
+exports.removeComment = (comment_id) => {
+    let lengthOfComments = 0;
+    return db.query('SELECT COUNT(*) FROM comments').then((commentCount) => {
+        lengthOfComments =  Number(commentCount.rows[0].count)
+    }).then(() => { 
+        if (comment_id > lengthOfComments) {
+            return Promise.reject({status: 404, msg: "Article ID not found"})
+        }
+        return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [comment_id]).then((result) => result.rows).catch(err => Promise.reject(err))
+    })
+}

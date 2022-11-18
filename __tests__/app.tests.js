@@ -487,3 +487,23 @@ describe('POST /api/articles/:article_id/comments', () => {
       })
     })
   
+describe('DELETE /api/comments/:comment_id', () => {
+  test('Status 204: responds by sending the deleted comment back to the user', () => {
+    return request(app)
+    .delete('/api/comments/2')
+    .expect(204)
+  })
+  test('Status 404: comment id not found', () => {
+    return request(app)
+    .delete('/api/comments/78')
+    .expect(404)
+    .then((res) => expect(res.body.msg).toBe("Article ID not found"))
+  })
+  test('Status 400: invalid comment id', () => {
+    return request(app)
+    .delete('/api/comments/delete')
+    .expect(400)
+    .then((res) => expect(res.body.msg).toBe("Bad Request"))
+  })
+})
+ 
