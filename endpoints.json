@@ -24,4 +24,85 @@
       ]
     }
   }
+  "GET /api/articles/:article_id": {
+    "description" : "get all articles with that associated article id",
+    "queries" : ["comment_count"],
+    "exampleResponse" : {
+      "article" : {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": 1594329060000,
+        "votes": 100,
+        "comment_count": 11
+      }
+    }
+  }, 
+  "GET /api/articles/:article_id/comments" : {
+    "description": "get all of the comments associated with a particular article",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [{
+        "comment_id": 16,
+        "body": "This is a bad article name",
+        "votes": 1,
+        "author": "butter_bridge",
+        "article_id": 6,
+        "created_at": 1602433380000
+      }]
+    }
+  },
+  "POST /api/articles/:article_id/comments" : {
+    "description": "post a commentassociatd with a specific article id",
+    "queries": [],
+    "exampleBody" : {
+      "article_id": 1,
+      "comment": "Cool Comment"
+    },
+    "exampleResponse": {
+      "comment_id": 19,
+      "article_id": 1,
+      "author": "butter_bridge",
+      "body": "Cool Cooment",
+      "votes": 0,
+      "created_at":1668769194
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+  "description": "update/patch a specific articles votes via its id",
+  "queries": [],
+  "exampleBody": {
+    "article_id": 1,
+    "inc_votes": 4
+  },
+  "exampleResponse": {
+    "article_id": 1,
+    "title": "Living in the shadow of a great man",
+    "topic": "mitch",
+    "author": "butter_bridge",
+    "body": "I find this existence challenging",
+    "created_at": 1594329060000,
+    "votes": 104
+  }
+  },
+  "GET /api/users": {
+    "description": "get all users",
+    "queries": [],
+    "exampleResponse": {
+      "users" : [{
+        "user_id": 1,
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url":
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }]
+    }
+  },
+  "DELETE /api/comments/comment_id": {
+    "description": "delete a specific comment via its id",
+    "queries": []
+  }
+
 }
