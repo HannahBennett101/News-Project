@@ -1,5 +1,5 @@
 const { selectTopics, selectArticles, selectArticleByID, selectCommentsByArticleID, insertComment, updateVote, selectUsers, removeComment } = require('../models/models');
-const endpoints = require(`../endpoints.json`)
+
 
 exports.getTopics = (req,res,next) => {
     selectTopics()
