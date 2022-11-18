@@ -446,3 +446,44 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
   })
   })
+
+  describe('comment count addition', () => {
+    test('Status 200: responds with a comment count for article 2 (comment count exists)', () => {
+      return request(app)
+      .get('/api/articles/1?comment_count=true')
+      .expect(200)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toMatchObject({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",     
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 100,
+          comment_count: "11"
+        })
+      })
+    })
+    test('Status 200: responds with a zero comment count for article 7', () => {
+      return request(app)
+      .get('/api/articles/7?comment_count=true')
+      .expect(200)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toMatchObject({
+          article_id: 7,
+            title: "Z",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "I was hungry.",
+            created_at: expect.any(String),
+            votes: 0,
+            comment_count: "0"
+          })
+
+        })
+      })
+    })
+  

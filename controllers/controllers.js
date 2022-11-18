@@ -23,8 +23,7 @@ exports.checkQueries = (req,res,next) => {
 }
 
 exports.getArticlesByID = (req, res, next) => {
-    const { article_id } = req.params;
-    selectArticleByID(article_id)
+    selectArticleByID(req.params.article_id, req.query.comment_count)
     .then(article => res.status(200).send({article: article}))
     .catch(err => next(err));
 };

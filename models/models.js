@@ -24,10 +24,13 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "DESC") => {
     .then(({ rows }) => rows[0] === undefined ? Promise.reject({ status:404, msg: "No articles associated with this topic"}) : rows)
 }
 
-exports.selectArticleByID = (article_id) =>{
-    return db.query(
-            `SELECT * FROM articles WHERE article_id = $1`, [article_id]
-        ).then(({rows}) => rows[0] === undefined ? Promise.reject({status:404, msg:"Article not found"}) : rows[0])
+exports.selectArticleByID = (article_id, comment_count) =>{
+    let query = 'SELECT *'
+    query += comment_count === "true" ? ", (SELECT COUNT(comment_id) FROM comments WHERE articles.article_id = comments.article_id) as comment_count" : ""
+    query += " FROM articles WHERE article_id = $1"
+
+    return db.query(query, [article_id])
+    .then(({rows}) => rows[0] === undefined ? Promise.reject({status:404, msg:"Article not found"}) : rows[0])
         .catch(err => Promise.reject(err))
 };
 
