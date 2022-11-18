@@ -85,3 +85,26 @@ exports.selectUsers = () => {
     .then((result) => result.rows)
     .catch(err => Promise.reject(err))
 };
+
+exports.removeComment = (comment_id) => {
+    
+    const commentArray = [];
+    return db.query('SELECT comment_id FROM comments').then((commentID) => {
+        commentID.rows.forEach((comment) => {
+        let id = comment.comment_id;
+        commentArray.push(id)})
+}).then(() => {
+  
+    if (isNaN(comment_id) === true) {
+        
+            return Promise.reject({status: 400, msg: "Bad Request"})
+    }
+    else if (commentArray.includes(Number(comment_id)) === false) {
+        return Promise.reject({status:404, msg: "Article ID not found"})
+    }
+    else {
+        
+        return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [comment_id]).then((result) => result.rows).catch(err => Promise.reject(err))
+    }
+    })
+}
